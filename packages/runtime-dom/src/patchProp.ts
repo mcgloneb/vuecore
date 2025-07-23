@@ -65,12 +65,17 @@ export const patchProp: DOMRendererOptions['patchProp'] = (
     patchDOMProp(el, camelize(key), nextValue, parentComponent, key)
   } else {
     // special case for <input v-model type="checkbox"> with
-    // :true-value & :false-value
+    // true-value & false-value (configurable)
     // store value as dom properties since non-string values will be
     // stringified.
-    if (key === 'true-value') {
+    const config = parentComponent
+      ? parentComponent.appContext.config
+      : undefined
+    const trueAttr = (config && config.vModelTrueValueAttr) || 'true-value'
+    const falseAttr = (config && config.vModelFalseValueAttr) || 'false-value'
+    if (key === trueAttr) {
       ;(el as any)._trueValue = nextValue
-    } else if (key === 'false-value') {
+    } else if (key === falseAttr) {
       ;(el as any)._falseValue = nextValue
     }
     patchAttr(el, key, nextValue, isSVG, parentComponent)

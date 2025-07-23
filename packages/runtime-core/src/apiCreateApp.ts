@@ -166,6 +166,18 @@ export interface AppConfig {
    * Prefix for all useId() calls within this app
    */
   idPrefix?: string
+
+  /**
+   * Attribute name for checkbox true-value bindings used by v-model.
+   * Defaults to `"true-value"` for backwards compatibility.
+   */
+  vModelTrueValueAttr?: string
+
+  /**
+   * Attribute name for checkbox false-value bindings used by v-model.
+   * Defaults to `"false-value"` for backwards compatibility.
+   */
+  vModelFalseValueAttr?: string
 }
 
 export interface AppContext {
@@ -232,6 +244,8 @@ export function createAppContext(): AppContext {
       errorHandler: undefined,
       warnHandler: undefined,
       compilerOptions: {},
+      vModelTrueValueAttr: 'true-value',
+      vModelFalseValueAttr: 'false-value',
     },
     mixins: [],
     components: {},

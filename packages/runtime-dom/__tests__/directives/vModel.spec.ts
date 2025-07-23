@@ -1,5 +1,6 @@
 import {
   type VNode,
+  createApp,
   defineComponent,
   h,
   nextTick,
@@ -587,6 +588,41 @@ describe('vModel', () => {
     triggerEvent('change', input)
     await nextTick()
     expect(data.value).toEqual({ no: 'no' })
+  })
+
+  it('should allow customizing true-value/false-value attribute names via config', async () => {
+    const component = defineComponent({
+      data() {
+        return { value: 'yes' }
+      },
+      render() {
+        return [
+          withVModel(
+            h('input', {
+              type: 'checkbox',
+              'data-true-value': 'yes',
+              'data-false-value': 'no',
+              'onUpdate:modelValue': setValue.bind(this),
+            }),
+            this.value,
+          ),
+        ]
+      },
+    })
+    const app = createApp(component)
+    app.config.vModelTrueValueAttr = 'data-true-value'
+    app.config.vModelFalseValueAttr = 'data-false-value'
+    app.mount(root)
+
+    const input = root.querySelector('input')!
+    const data = root._vnode!.component!.data
+
+    expect(input.checked).toEqual(true)
+
+    input.checked = false
+    triggerEvent('change', input)
+    await nextTick()
+    expect(data.value).toEqual('no')
   })
 
   it(`should support array as a checkbox model`, async () => {
